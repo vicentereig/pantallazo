@@ -20,7 +20,7 @@ express().get('/', async(request, res) => {
             waitUntil:['networkidle0','domcontentloaded'], device: 'iPhone X', element: '.screenshot'
         })
                 
-    res.end(buffer, 'binary')                
+    res.type('png').end(buffer, 'binary')
 
     console.log(`screenshot size=${prettyBytes(buffer.byteLength)} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
 })
