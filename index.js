@@ -15,7 +15,10 @@ express().get('/', async(request, res) => {
         return res.status(400).end('Missing url')
     }
     
-    const buffer = await browserless.screenshot(url, {device: 'iPhone X', element: '.screenshot'})
+    const buffer = await browserless.screenshot(url, 
+        {
+            waitUntil:['networkidle0','domcontentloaded'], device: 'iPhone X', element: '.screenshot'
+        })
                 
     res.end(buffer, 'binary')                
 
