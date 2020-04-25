@@ -4,18 +4,21 @@ const browserless = require('browserless')({
     ignoreHTTPSErrors: true,
     args: ['--disable-gpu', '--single-process', '--no-zygote', '--no-sandbox', '--hide-scrollbars']
 })
+const express = require('express')
+const PORT = process.env.PORT || 5000
 
-const { cpu, uptime, memUsed} = procStats()
+express().get('/', async(request, res) => {
+    const { cpu, uptime, memUsed} = procStats()
+    const url = request.query.url
 
+    if  (url === undefined) {
+        return res.status(400).end('Missing url')
+    }
+    
+    const buffer = await browserless.screenshot(url, {device: 'iPhone X', element: '.screenshot'})
+                
+    res.end(buffer, 'binary')                
 
-
-const url = "https://staging.gaslytics.com/cards/price_update?fuel_abbr=BIE&operator=Petromiralles"
-browserless.screenshot(url, { device: 'iPhone X' }).then(buffer => {
-    console.log(`  size   : ${prettyBytes(buffer.byteLength)}`)
-    console.log(`  time   : ${uptime.pretty}`)
-    console.log(`  memory : ${memUsed.pretty}`)
-    console.log(`  cpu    : ${cpu}`)
-
-    process.exit()
+    console.log(`screenshot size=${prettyBytes(buffer.byteLength)} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
 })
-
+.listen(PORT, () => console.log(`Listening on ${ PORT }`))
