@@ -2,7 +2,9 @@ const procStats = require('process-stats')()
 const prettyBytes = require('pretty-bytes')
 const browserless = require('browserless')({
     ignoreHTTPSErrors: true,
-    args: ['--disable-gpu', '--single-process', '--no-zygote', '--no-sandbox', '--hide-scrollbars']
+    args: ['--enable-font-antialiasing', '--font-render-hinting=none',
+    '--font-render-hinting=medium',
+    '--disable-gpu', '--single-process', '--no-zygote', '--no-sandbox', '--hide-scrollbars']
 })
 const express = require('express')
 const PORT = process.env.PORT || 5000
