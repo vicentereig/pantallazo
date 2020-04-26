@@ -9,14 +9,8 @@ const browserless = require('browserless')({
 const express = require('express')
 const PORT = process.env.PORT || 5000
 
-express().get('/', async(request, res) => {
+const takeScreenshot = async (url, res) => {
     const { cpu, uptime, memUsed} = procStats()
-    const url = request.query.url
-
-    if  (url === undefined) {
-        return res.status(400).end('Missing url')
-    }
-    
     const buffer = await browserless.screenshot(url, 
         {
             waitUntil:['networkidle0','domcontentloaded'], device: 'iPhone X', element: '.screenshot'
@@ -25,5 +19,21 @@ express().get('/', async(request, res) => {
     res.type('png').end(buffer, 'binary')
 
     console.log(`screenshot size=${prettyBytes(buffer.byteLength)} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
+}
+
+express().get('/', async(request, res) => {    
+    const url = request.query.url
+
+    if  (url === undefined) {
+        return res.status(400).end('Missing url')
+    }
+    
+    try { 
+        return await takeScreenshot(url, res)
+    } catch(e) {
+        console.log('Error: ', e)
+    } finally {
+        return res.status(500).end('Screenshot failed')
+    }
 })
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))
