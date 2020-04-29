@@ -9,27 +9,28 @@ const browserless = require('browserless')({
 const express = require('express')
 const PORT = process.env.PORT || 5000
 
-const takeScreenshot = async (url, res) => {
+const takeScreenshot = async (url, element = '.screenshot', res) => {
     const { cpu, uptime, memUsed} = procStats()
-    const buffer = await browserless.screenshot(url, 
+    const buffer = await browserless.screenshot(url,
         {
-            waitUntil:['networkidle0','domcontentloaded'], device: 'iPhone X', element: '.screenshot'
+            waitUntil:['networkidle0','domcontentloaded'], device: 'iPhone X', element: element
         })
-                
+
     res.type('png').end(buffer, 'binary')
 
     console.log(`screenshot size=${prettyBytes(buffer.byteLength)} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
 }
 
-express().get('/', async(request, res) => {    
-    const url = request.query.url
+express().get('/', async(request, res) => {
+    const { url, element } = request.query
+    
 
     if  (url === undefined) {
         return res.status(400).end('Missing url')
     }
-    
-    try { 
-        return await takeScreenshot(url, res)
+
+    try {
+        return await takeScreenshot(url, element, res)
     } catch(e) {
         console.log('Error: ', e)
     } finally {
