@@ -9,7 +9,7 @@ const waitUntil = (process.env.WAIT_UNTIL || "").split(' ')
 const createBrowserless = require('@browserless/pool')
 
 const pool = createBrowserless({
-    max: 2,
+    max: process.env.WEB_CONCURRENCY,
     timeout: 30000
   },
   {
