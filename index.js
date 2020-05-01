@@ -3,7 +3,7 @@ const prettyBytes = require('pretty-bytes')
 const browserless = require('browserless')({
     ignoreHTTPSErrors: true,
     args: ['--enable-font-antialiasing', '--font-render-hinting=none',
-    '--font-render-hinting=medium',
+    '--font-render-hinting=full',
     '--disable-gpu', '--single-process', '--no-zygote', '--no-sandbox', '--hide-scrollbars']
 })
 const express = require('express')
@@ -23,7 +23,7 @@ const takeScreenshot = async (url, element = '.screenshot', res) => {
 
 express().get('/', async(request, res) => {
     const { url, element } = request.query
-    
+
 
     if  (url === undefined) {
         return res.status(400).end('Missing url')
