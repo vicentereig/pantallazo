@@ -3,17 +3,33 @@ const prettyBytes = require('pretty-bytes')
 
 const args = (process.env.HEADLESS_ARGS || "").split(' ')
 const waitUntil = (process.env.WAIT_UNTIL || "").split(' ')
-const browserless = require('browserless')({
-    ignoreHTTPSErrors: true,
-    args: args
+
+// const browserless = require('browserless')()
+
+const createBrowserless = require('@browserless/pool')
+
+const pool = createBrowserless({
+    max: 2,
+    timeout: 30000
+  },
+  {
+      ignoreHTTPSErrors: true,
+      args: args
+  }
+)
+
+process.on('exit', async () => {
+    await pool.drain()
+    await pool.clear()
 })
+
 const express = require('express')
 const PORT = process.env.PORT || 5000
 
 const takeScreenshot = async (url, element = '.screenshot', res) => {
     const { cpu, uptime, memUsed} = procStats()
     console.log(`screenshot-starts url=${url} element=${element} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
-    const buffer = await browserless.screenshot(url,
+    const buffer = await pool.screenshot(url,
         {
             waitUntil: waitUntil, device: 'iPhone X', element: element
         })
