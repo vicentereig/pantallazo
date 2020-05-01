@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 5000
 
 const takeScreenshot = async (url, element = '.screenshot', res) => {
     const { cpu, uptime, memUsed} = procStats()
+    console.log(`screenshot-starts url=${url} element=${element} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
     const buffer = await browserless.screenshot(url,
         {
             waitUntil:['networkidle0','domcontentloaded'], device: 'iPhone X', element: element
@@ -17,7 +18,7 @@ const takeScreenshot = async (url, element = '.screenshot', res) => {
 
     res.type('png').end(buffer, 'binary')
 
-    console.log(`screenshot size=${prettyBytes(buffer.byteLength)} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
+    console.log(`screenshot-end size=${prettyBytes(buffer.byteLength)} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
 }
 
 express().get('/', async(request, res) => {
