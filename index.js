@@ -1,9 +1,11 @@
 const procStats = require('process-stats')()
 const prettyBytes = require('pretty-bytes')
+
+const args = (process.env.HEADLESS_ARGS || "").split(' ')
+
 const browserless = require('browserless')({
     ignoreHTTPSErrors: true,
-    args: ['--enable-font-antialiasing', '--font-render-hinting=medium',
-    '--disable-gpu', '--single-process', '--no-zygote', '--no-sandbox', '--hide-scrollbars']
+    args: args
 })
 const express = require('express')
 const PORT = process.env.PORT || 5000
