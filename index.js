@@ -2,7 +2,7 @@ const procStats = require('process-stats')()
 const prettyBytes = require('pretty-bytes')
 
 const args = (process.env.HEADLESS_ARGS || "").split(' ')
-
+const waitUntil = (process.env.WAIT_UNTIL || "").split(' ')
 const browserless = require('browserless')({
     ignoreHTTPSErrors: true,
     args: args
@@ -15,7 +15,7 @@ const takeScreenshot = async (url, element = '.screenshot', res) => {
     console.log(`screenshot-starts url=${url} element=${element} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
     const buffer = await browserless.screenshot(url,
         {
-            waitUntil:['networkidle0','domcontentloaded'], device: 'iPhone X', element: element
+            waitUntil: waitUntil, device: 'iPhone X', element: element
         })
 
     res.type('png').end(buffer, 'binary')
