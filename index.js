@@ -31,7 +31,8 @@ const takeScreenshot = async (url, element = '.screenshot', res) => {
     console.log(`screenshot-starts url=${url} element=${element} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
     const buffer = await pool.screenshot(url,
         {
-            waitUntil: waitUntil, device: 'iPhone X', element: element
+            waitUntil: waitUntil, device: 'iPhone X', element: element,
+            viewport: { deviceScaleFactor: 2}
         })
 
     res.type('png').end(buffer, 'binary')
