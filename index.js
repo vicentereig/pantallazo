@@ -1,15 +1,16 @@
 const procStats = require('process-stats')()
 const prettyBytes = require('pretty-bytes')
 
-const args = (process.env.HEADLESS_ARGS || "").split(' ')
-const waitUntil = (process.env.WAIT_UNTIL || "").split(' ')
+const defaultHeadlessArgs = "--disable-setuid-sandbox --disable-dev-shm-usage --disable-accelerated-2d-canvas --no-first-run --enable-font-antialiasing --font-render-hinting=none --disable-gpu --single-process --no-zygote --no-sandbox --hide-scrollbars"
+const args = (process.env.HEADLESS_ARGS || defaultHeadlessArgs).split(' ')
+const waitUntil = (process.env.WAIT_UNTIL || "networkidle0").split(' ')
 
 // const browserless = require('browserless')()
 
 const createBrowserless = require('@browserless/pool')
 
 const pool = createBrowserless({
-    max: process.env.WEB_CONCURRENCY,
+    max: process.env.WEB_CONCURRENCY || 2,
     timeout: 30000
   },
   {
