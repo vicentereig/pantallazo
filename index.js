@@ -36,7 +36,7 @@ const takeScreenshot = async (url, element = '.screenshot', res) => {
             viewport: { deviceScaleFactor: 2}
         })
 
-    res.type('png').end(buffer, 'binary')
+    res.set('Cache-Control', 'max-age=0, no-cache, no-store, must-revalidate').type('png').end(buffer, 'binary')
 
     console.log(`screenshot-end size=${prettyBytes(buffer.byteLength)} time=${uptime.pretty} mem=${memUsed.pretty} cpu=${cpu}`)
 }
